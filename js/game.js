@@ -1,4 +1,3 @@
-// Main Game Object
 const Game = {
     canvas: null,
     ctx: null,
@@ -14,13 +13,12 @@ const Game = {
     isLevelComplete: false,
     keys: {},
     lastShot: 0,
-    shotDelay: 300, // milliseconds between shots
+    shotDelay: 300, 
     
     init: function() {
         this.canvas = document.getElementById('game-canvas');
         this.ctx = this.canvas.getContext('2d');
         
-        // Event listeners
         document.addEventListener('keydown', (e) => {
             this.keys[e.key] = true;
         });
@@ -45,7 +43,6 @@ const Game = {
             this.startLevel(1);
         });
         
-        // Start with the start screen
         document.getElementById('start-screen').style.display = 'flex';
     },
     
@@ -57,24 +54,20 @@ const Game = {
         this.enemies = [];
         this.explosions = [];
         
-        // Update UI
         document.getElementById('level-display').textContent = level;
         document.getElementById('score-display').textContent = this.score;
         document.getElementById('lives-display').textContent = this.lives;
         
-        // Create player
         this.player = new Player(this.canvas.width / 2, this.canvas.height - 50, 30, 30);
         
-        // Create enemies based on level
         this.createEnemies(level);
         
-        // Start game loop
         this.gameLoop();
     },
     
     createEnemies: function(level) {
-        const enemyRows = Math.min(3 + level, 6); // More rows in higher levels
-        const enemyCols = Math.min(3 + level, 8); // More columns in higher levels
+        const enemyRows = Math.min(3 + level, 6); 
+        const enemyCols = Math.min(3 + level, 8);
         const enemySpacing = 60;
         const startX = 100;
         const startY = 50;
@@ -83,7 +76,7 @@ const Game = {
             for (let col = 0; col < enemyCols; col++) {
                 const x = startX + col * enemySpacing;
                 const y = startY + row * enemySpacing;
-                const speed = 0.5 + (level * 0.2); // Faster enemies in higher levels
+                const speed = 0.5 + (level * 0.2); 
                 
                 this.enemies.push(new Enemy(x, y, 30, 30, speed));
             }
@@ -96,31 +89,23 @@ const Game = {
     gameLoop: function() {
         if (this.isGameOver || this.isLevelComplete) return;
         
-        // Clear canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Draw starry background
         this.drawBackground();
         
-        // Update game objects
         this.update();
         
-        // Draw game objects
         this.draw();
         
-        // Check game state
         this.checkGameState();
         
-        // Continue loop
         requestAnimationFrame(() => this.gameLoop());
     },
     
     drawBackground: function() {
-        // Draw starry background
         this.ctx.fillStyle = '#000033';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Draw some stars
         this.ctx.fillStyle = 'white';
         for (let i = 0; i < 100; i++) {
             const x = Math.random() * this.canvas.width;
@@ -131,10 +116,8 @@ const Game = {
     },
     
     update: function() {
-        // Update player
         this.player.update(this);
         
-        // Shoot bullets
         if ((this.keys[' '] || this.keys['Spacebar']) && Date.now() - this.lastShot > this.shotDelay) {
             this.bullets.push(new Bullet(
                 this.player.x + this.player.width / 2 - 2.5,
@@ -146,42 +129,35 @@ const Game = {
             this.lastShot = Date.now();
         }
         
-        // Update bullets
         for (let i = this.bullets.length - 1; i >= 0; i--) {
             this.bullets[i].update();
             
-            // Remove bullets that are off screen
             if (this.bullets[i].y < 0) {
                 this.bullets.splice(i, 1);
             }
         }
         
-        // Update enemies
         let edgeReached = false;
         this.enemies.forEach(enemy => {
             enemy.update(this);
             
-            // Check if any enemy reached the edge
             if (enemy.x <= 0 || enemy.x + enemy.width >= this.canvas.width) {
                 edgeReached = true;
             }
             
-            // Check if any enemy reached the bottom
             if (enemy.y + enemy.height >= this.canvas.height - 50) {
                 this.lives = 0;
                 this.isGameOver = true;
             }
         });
         
-        // Reverse direction if edge reached
         if (edgeReached) {
             this.enemies.forEach(enemy => {
                 enemy.speed *= -1;
-                enemy.y += 20; // Move down
+                enemy.y += 20; 
             });
         }
         
-        // Update explosions
         for (let i = this.explosions.length - 1; i >= 0; i--) {
             this.explosions[i].update();
             if (this.explosions[i].alpha <= 0) {
@@ -189,46 +165,38 @@ const Game = {
             }
         }
         
-        // Check collisions
         this.checkCollisions();
     },
     
     draw: function() {
-        // Draw player
         this.player.draw(this.ctx);
         
-        // Draw bullets
         this.bullets.forEach(bullet => {
             bullet.draw(this.ctx);
         });
         
-        // Draw enemies
         this.enemies.forEach(enemy => {
             enemy.draw(this.ctx);
         });
         
-        // Draw explosions
         this.explosions.forEach(explosion => {
             explosion.draw(this.ctx);
         });
     },
     
     checkCollisions: function() {
-        // Bullet-enemy collisions
         for (let i = this.bullets.length - 1; i >= 0; i--) {
             for (let j = this.enemies.length - 1; j >= 0; j--) {
                 if (this.bullets[i].isColliding(this.enemies[j])) {
-                    // Create explosion
+
                     this.explosions.push(new Explosion(
                         this.enemies[j].x + this.enemies[j].width / 2,
                         this.enemies[j].y + this.enemies[j].height / 2
                     ));
                     
-                    // Remove bullet and enemy
                     this.bullets.splice(i, 1);
                     this.enemies.splice(j, 1);
                     
-                    // Update score and enemies remaining
                     this.score += 100;
                     this.enemiesRemaining--;
                     document.getElementById('score-display').textContent = this.score;
@@ -239,28 +207,23 @@ const Game = {
             }
         }
         
-        // Player-enemy collisions
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             if (this.player.isColliding(this.enemies[i])) {
-                // Create explosion
+
                 this.explosions.push(new Explosion(
                     this.enemies[i].x + this.enemies[i].width / 2,
                     this.enemies[i].y + this.enemies[i].height / 2
                 ));
                 
-                // Remove enemy
                 this.enemies.splice(i, 1);
                 
-                // Lose a life
                 this.lives--;
                 document.getElementById('lives-display').textContent = this.lives;
                 
-                // Check if game over
                 if (this.lives <= 0) {
                     this.isGameOver = true;
                 }
                 
-                // Update enemies remaining
                 this.enemiesRemaining--;
                 document.getElementById('enemies-display').textContent = this.enemiesRemaining;
             }
@@ -273,7 +236,7 @@ const Game = {
             document.getElementById('game-over').style.display = 'flex';
         } else if (this.enemiesRemaining <= 0) {
             if (this.currentLevel === 4) {
-                // Game complete
+
                 document.getElementById('level-complete').style.display = 'flex';
                 document.getElementById('level-complete').innerHTML = `
                     <h2>Congratulations!</h2>
@@ -302,7 +265,6 @@ const Game = {
     }
 };
 
-// Game Objects
 function Player(x, y, width, height) {
     this.x = x;
     this.y = y;
@@ -313,29 +275,24 @@ function Player(x, y, width, height) {
 }
 
 Player.prototype.update = function(game) {
-    // Move left
     if (game.keys['ArrowLeft'] || game.keys['a']) {
         this.x = Math.max(0, this.x - this.speed);
     }
     
-    // Move right
     if (game.keys['ArrowRight'] || game.keys['d']) {
         this.x = Math.min(game.canvas.width - this.width, this.x + this.speed);
     }
     
-    // Move up
     if (game.keys['ArrowUp'] || game.keys['w']) {
         this.y = Math.max(0, this.y - this.speed);
     }
     
-    // Move down
     if (game.keys['ArrowDown'] || game.keys['s']) {
         this.y = Math.min(game.canvas.height - this.height, this.y + this.speed);
     }
 };
 
 Player.prototype.draw = function(ctx) {
-    // Draw player ship
     ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.moveTo(this.x + this.width / 2, this.y);
@@ -344,7 +301,6 @@ Player.prototype.draw = function(ctx) {
     ctx.closePath();
     ctx.fill();
     
-    // Draw cockpit
     ctx.fillStyle = '#88f';
     ctx.beginPath();
     ctx.arc(this.x + this.width / 2, this.y + this.height / 2, 5, 0, Math.PI * 2);
@@ -398,7 +354,7 @@ Enemy.prototype.update = function(game) {
 };
 
 Enemy.prototype.draw = function(ctx) {
-    // Draw enemy ship
+
     ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
@@ -407,7 +363,6 @@ Enemy.prototype.draw = function(ctx) {
     ctx.closePath();
     ctx.fill();
     
-    // Draw details
     ctx.fillStyle = '#900';
     ctx.beginPath();
     ctx.arc(this.x + this.width / 2, this.y + this.height / 2, 5, 0, Math.PI * 2);
@@ -445,7 +400,6 @@ Explosion.prototype.draw = function(ctx) {
     ctx.restore();
 };
 
-// Initialize the game when the page loads
 window.onload = function() {
     Game.init();
 };

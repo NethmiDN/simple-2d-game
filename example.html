@@ -1,4 +1,175 @@
-const Game = {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 9</title>
+    <style>
+        body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    margin: 20px auto;
+    background-color: #111;
+    border: 2px solid #444;
+}
+
+#game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    font-size: 18px;
+    z-index: 10;
+}
+
+#game-over {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 20;
+}
+
+#game-over h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+#game-over button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#level-complete {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 20;
+}
+
+#level-complete h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+#level-complete button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 30;
+}
+
+#start-screen h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #4CAF50;
+}
+
+#start-screen button {
+    padding: 15px 30px;
+    font-size: 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#controls {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #ccc;
+    text-align: center;
+}
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="ui">
+            <div>Level: <span id="level-display">1</span></div>
+            <div>Score: <span id="score-display">0</span></div>
+            <div>Lives: <span id="lives-display">3</span></div>
+            <div>Enemies: <span id="enemies-display">0</span></div>
+        </div>
+        
+        <canvas id="game-canvas" width="800" height="600"></canvas>
+        
+        <div id="game-over">
+            <h2>Game Over!</h2>
+            <p>Final Score: <span id="final-score">0</span></p>
+            <button id="restart-btn">Play Again</button>
+        </div>
+        
+        <div id="level-complete">
+            <h2>Level Complete!</h2>
+            <p>Score: <span id="level-score">0</span></p>
+            <button id="next-level-btn">Next Level</button>
+        </div>
+        
+        <div id="start-screen">
+            <h1>Space Shooter</h1>
+            <button id="start-btn">Start Game</button>
+            <div id="controls">
+                <p>Controls: Arrow Keys to Move, Space to Shoot</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const Game = {
     canvas: null,
     ctx: null,
     player: null,
@@ -403,33 +574,6 @@ Explosion.prototype.draw = function(ctx) {
 window.onload = function() {
     Game.init();
 };
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth < 500 ? window.innerWidth : 500;
-    canvas.height = window.innerHeight < 700 ? window.innerHeight - 100 : 700;
-}
-
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-// Mobile control variables
-let moveLeft = false;
-let moveRight = false;
-
-$("#leftBtn").on("touchstart", () => moveLeft = true);
-$("#leftBtn").on("touchend", () => moveLeft = false);
-
-$("#rightBtn").on("touchstart", () => moveRight = true);
-$("#rightBtn").on("touchend", () => moveRight = false);
-
-$("#shootBtn").on("touchstart", shootBullet); // reuse your shootBullet function
-
-function moveSpaceship() {
-    if (keys["ArrowLeft"] || moveLeft) {
-      spaceship.x = Math.max(0, spaceship.x - spaceship.speed);
-    }
-    if (keys["ArrowRight"] || moveRight) {
-      spaceship.x = Math.min(canvas.width - spaceship.width, spaceship.x + spaceship.speed);
-    }
-  }
-  
+    </script>
+</body>
+</html>

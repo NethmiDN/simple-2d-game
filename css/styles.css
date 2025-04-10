@@ -15,11 +15,14 @@ body {
     border: 2px solid #444;
 }
 
-#game-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
+#gameCanvas {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    background: black;
+}  
 
 #ui {
     position: absolute;
@@ -127,3 +130,20 @@ body {
     color: #ccc;
     text-align: center;
 }
+
+#mobileControls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 10px;
+  }
+  
+  #mobileControls button {
+    font-size: 24px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: none;
+    background-color: #333;
+    color: white;
+  }
+  

@@ -403,33 +403,3 @@ Explosion.prototype.draw = function(ctx) {
 window.onload = function() {
     Game.init();
 };
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth < 500 ? window.innerWidth : 500;
-    canvas.height = window.innerHeight < 700 ? window.innerHeight - 100 : 700;
-}
-
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-// Mobile control variables
-let moveLeft = false;
-let moveRight = false;
-
-$("#leftBtn").on("touchstart", () => moveLeft = true);
-$("#leftBtn").on("touchend", () => moveLeft = false);
-
-$("#rightBtn").on("touchstart", () => moveRight = true);
-$("#rightBtn").on("touchend", () => moveRight = false);
-
-$("#shootBtn").on("touchstart", shootBullet); // reuse your shootBullet function
-
-function moveSpaceship() {
-    if (keys["ArrowLeft"] || moveLeft) {
-      spaceship.x = Math.max(0, spaceship.x - spaceship.speed);
-    }
-    if (keys["ArrowRight"] || moveRight) {
-      spaceship.x = Math.min(canvas.width - spaceship.width, spaceship.x + spaceship.speed);
-    }
-  }
-  
